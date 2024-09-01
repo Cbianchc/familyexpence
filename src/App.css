@@ -1,0 +1,75 @@
+#root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  width: 100%;
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1100;
+  background: linear-gradient(to bottom, #054936, #242424);
+}
+
+.header .MuiToolbar-root {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.greeting {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: xx-large;
+  padding: 5px;
+}
+
+.gradient-name {
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 600px) {
+  .greeting {
+    font-size: large;
+    padding: 2px;
+  }
+
+  .header .MuiToolbar-root {
+    flex-wrap: wrap;
+  }
+}
+
+.main-content {
+  padding-top: 100px; /* Ajusta según la altura de tu header */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #242424;
+  color: white;
+}
+
+/*---------------------------- Perfil de user */
+.perfil {
+  max-width: 600px;
+  height: 90vh;
+  background-color: rgb(222, 222, 222);
+  margin-top: 20px;
+  border-radius: 10px;
+  color: #242424;
+}
