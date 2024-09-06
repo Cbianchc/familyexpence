@@ -32,24 +32,26 @@ const JoinFamily = () => {
       if (user) {
         const userDoc = await getDoc(doc(db, 'familiasusers', user.uid));
         const userData = userDoc.data();
-
+  
         if (userData && userData.username) {
           const username = userData.username;
-
+  
           const familyRef = doc(db, 'familiasDB', familyId);
           const familySnap = await getDoc(familyRef);
+          
           if (familySnap.exists()) {
-            await updateDoc(familyRef, {
-              users: arrayUnion({ id: user.uid, name: username }),
-
+            // Agregar el usuario a la subcolección 'miembros' de la familia
+            await setDoc(doc(familyRef, 'miembros', user.uid), {
+              id: user.uid,
+              name: username,
+              email: user.email,
             });
+  
+            // Actualizar el documento del usuario con el ID de la familia
             await updateDoc(doc(db, 'familiasusers', user.uid), {
-              offices: arrayUnion(familyId),
+              familyId: familyId,
             });
-            // Guarda userId y familyId en el estado global
-            // dispatch({ type: 'SET_USER_ID', payload: user.uid });
-            // dispatch({ type: 'SET_FAMILY_ID', payload: familyId });
-
+  
             navigate('/dashboard');
           } else {
             setErrorMsg('Grupo no encontrado');
@@ -62,6 +64,7 @@ const JoinFamily = () => {
       }
     } catch (error) {
       setErrorMsg('Error al unirse a la familia: ' + error.message);
+      console.error('Error al unirse a la familia:', error);
     }
   };
 
@@ -100,10 +103,15 @@ const JoinFamily = () => {
       await setDoc(newGastoRef, {
         amount: -50,
         category: 'transaccion ejemplo',
-        text: '100'
+        text: '100',
+        id: "1Test",
       });
 
       await setDoc(doc(familyRef, 'categorias', 'categoriaInicial'), {
+        name: 'Categoría inicial'
+      });
+
+      await setDoc(doc(familyRef, 'listasCompras', 'compraInicial'), {
         name: 'Categoría inicial'
       });
   

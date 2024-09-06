@@ -14,6 +14,7 @@ import { GlobalProvider } from './context/GlobalState';
 function TrackerExpence() {
   const [loading, setLoading] = useState(true);
   const [familyId, setFamilyId] = useState(null);
+  const [userName, setUserName] = useState(null);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -39,6 +40,8 @@ function TrackerExpence() {
             if (userData && userData.familyId) {
               setFamilyId(userData.familyId); // Guardar el familyId en el estado
               // console.log('Family ID fetched:', userData.familyId);
+              setUserName(userData)
+              // console.log("Aca ta ", userName.username)
             } else {
               console.error('Family ID not found in user document');
             }
@@ -62,11 +65,11 @@ function TrackerExpence() {
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <Container maxWidth="sm">
-          <Box my={4}>
+        <Container maxWidth="sm" sx={{ p: 0, m: 0 }}>
+          <Box my={1}>
             <Balance />
-            <AddTransaction familyId={familyId}/>
-            <IncomeExpenses />
+            <AddTransaction familyId={familyId} user={userName}/>
+            <IncomeExpenses user={userName}/>
             <TransactionList />
           </Box>
         </Container>

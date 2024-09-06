@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Button, Dialog, DialogTitle, DialogContent, TextField, Grid, MenuItem } from '@mui/material';
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
+import { RadioGroup, FormControlLabel, Radio } from '@mui/material';
 
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db } from '../../../data/firebase';
@@ -8,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { GlobalContext } from '../context/GlobalState';
 
-export const AddTransaction = ({ familyId }) => {
+export const AddTransaction = ({ familyId, user }) => {
   const [open, setOpen] = useState(false);
   const [isIncome, setIsIncome] = useState(true);
   const [text, setText] = useState('');
@@ -19,6 +20,7 @@ export const AddTransaction = ({ familyId }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
+  const [isFixedExpense, setIsFixedExpense] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -73,6 +75,8 @@ export const AddTransaction = ({ familyId }) => {
       amount: isIncome ? +amount : -amount,
       category,
       timestamp: new Date().toISOString(),
+      isFixedExpense,
+      user: user.username,
     };
 
     addTransaction(newTransaction);
@@ -85,7 +89,7 @@ export const AddTransaction = ({ familyId }) => {
 
   return (
     <div>
-      <Grid container spacing={2} sx={{ mt: 3 }}>
+      <Grid container spacing={2} sx={{ mt: 1 }}>
         <Grid item xs={6}>
           <Button
             variant="contained"
@@ -149,24 +153,31 @@ export const AddTransaction = ({ familyId }) => {
               value={amount}
               onChange={e => setAmount(e.target.value)}
               margin="dense"
-            />
-            <Grid container spacing={1} alignItems="center">
-            <Grid item xs={9}>
-            <TextField
-              label="Categoría"
-              select
-              fullWidth
-              value={category}
-              onChange={e => setCategory(e.target.value)}
-              margin="dense"
+            /><RadioGroup
+              row
+              value={isFixedExpense ? 'fixed' : 'sporadic'}
+              onChange={(e) => setIsFixedExpense(e.target.value === 'fixed')}
             >
-              {categories.map((category) => (
-                <MenuItem key={category} value={category}>
-                  {category}
-                </MenuItem>
-              ))}
-            </TextField>
-            </Grid>
+              <FormControlLabel value="fixed" control={<Radio />} label="Gasto Fijo" />
+              <FormControlLabel value="sporadic" control={<Radio />} label="Gasto Esporádico" />
+            </RadioGroup>
+            <Grid container spacing={1} alignItems="center">
+              <Grid item xs={9}>
+                <TextField
+                  label="Categoría"
+                  select
+                  fullWidth
+                  value={category}
+                  onChange={e => setCategory(e.target.value)}
+                  margin="dense"
+                >
+                  {categories.map((category) => (
+                    <MenuItem key={category} value={category}>
+                      {category}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
               <Grid item xs={2}>
                 <Button
                   variant="outlined"
@@ -194,7 +205,7 @@ export const AddTransaction = ({ familyId }) => {
         </DialogContent>
       </Dialog>
 
-{/* Modal para agregar una nueva categoría */}
+      {/* Modal para agregar una nueva categoría */}
       <Dialog open={categoryDialogOpen} onClose={handleCategoryDialogClose} fullWidth aria-hidden={!open}>
         <DialogTitle>Agregar Nueva Categoría</DialogTitle>
         <DialogContent>

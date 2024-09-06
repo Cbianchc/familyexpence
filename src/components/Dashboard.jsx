@@ -61,11 +61,13 @@ const drawerWidth = 240;
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
+  backgroundColor: theme.palette.primary.main,
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
+  boxShadow: theme.shadows[6],
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
@@ -79,6 +81,8 @@ const AppBar = styled(MuiAppBar, {
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
     '& .MuiDrawer-paper': {
+      backgroundColor: theme.palette.background.paper,
+      color: theme.palette.text.primary,
       position: 'relative',
       whiteSpace: 'nowrap',
       width: drawerWidth,
@@ -87,6 +91,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
         duration: theme.transitions.duration.enteringScreen,
       }),
       boxSizing: 'border-box',
+      boxShadow: theme.shadows[6],
+      borderRight: `1px solid ${theme.palette.divider}`,
       ...(!open && {
         overflowX: 'hidden',
         transition: theme.transitions.create('width', {
@@ -99,7 +105,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
         },
       }),
     },
-  }),
+  })
 );
 
 const defaultTheme = createTheme();
@@ -166,14 +172,10 @@ export default function Dashboard() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: '24px', // keep right padding when drawer closed
-            }}
-          >
+          <Toolbar sx={{ pr: '24px' }}>
             <IconButton
               edge="start"
               color="inherit"
@@ -193,7 +195,7 @@ export default function Dashboard() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Perfil header
+              Panel de Usuario
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -217,43 +219,32 @@ export default function Dashboard() {
           </Toolbar>
           <Divider />
           <List component="nav" sx={{ flexGrow: 1 }}>
-            {/* Pestaña perfil */}
             <ListItemButton onClick={HandleTrackerExp}>
               <ListItemIcon>
                 <LeaderboardIcon />
               </ListItemIcon>
               <ListItemText primary="Gastos" />
             </ListItemButton>
-            {/* pestaña Compras             */}
             <ListItemButton onClick={HandleCompras}>
               <ListItemIcon>
                 <ShoppingCartIcon />
               </ListItemIcon>
               <ListItemText primary="Compras" />
             </ListItemButton>
-            {/* Pestaña Dividir la cuenta             */}
             <ListItemButton onClick={HandleDivideCuenta}>
               <ListItemIcon>
                 <CalculateIcon />
               </ListItemIcon>
               <ListItemText primary="Dividir Cuenta" />
             </ListItemButton>
-
-            {/* Pestaña Conversor de divisas */}
             <ListItemButton onClick={HandleConversor}>
               <ListItemIcon>
                 <CurrencyExchangeIcon />
               </ListItemIcon>
               <ListItemText primary="Divisas" />
             </ListItemButton>
-
-
-            {/* <Divider sx={{ my: 1 }} />
-            {secondaryListItems} */}
           </List>
           <Divider sx={{ my: 1 }} />
-
-          {/* Perfil usuario */}
           <Box sx={{ pb: 2 }}>
             <ListItemButton onClick={HandlePerfil}>
               <ListItemIcon>
@@ -274,7 +265,7 @@ export default function Dashboard() {
           sx={{
             backgroundColor: (theme) =>
               theme.palette.mode === 'light'
-                ? theme.palette.grey[100]
+                ? theme.palette.grey[200]
                 : theme.palette.grey[900],
             flexGrow: 1,
             height: '100vh',
@@ -282,14 +273,12 @@ export default function Dashboard() {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-
+          <Container maxWidth="lg" sx={{ mt: 2, mb: 4, px: 1 }}>
             {openTracker && <TrackerExpence />}
             {openCompras && <ListaCompras />}
             {openDivideGastos && <DividirGastos />}
             {openPerfil && <UserProfile />}
             {openConversor && <ConversorDivisas />}
-
           </Container>
         </Box>
       </Box>

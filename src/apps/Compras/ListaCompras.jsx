@@ -35,9 +35,11 @@ const ListaCompras = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [totalPrice, setTotalPrice] = useState('');
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const [deleteModalItemOpen, setDeleteModalItemOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedCompra, setSelectedCompra] = useState(null);
-  const [deleteItemModalOpen, setDeleteItemModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [checkedItems, setCheckedItems] = useState([]);
 
   const handleCheckBox = (index) => (event) => {
@@ -143,7 +145,9 @@ const ListaCompras = () => {
 
   const handleAddItem = async () => {
     if (itemName.trim() && currentCompraId) {
-      const newItem = { name: itemName, quantity, weight, brand };
+      const newItemId = doc(collection(db, 'dummy')).id;
+
+      const newItem = { id: newItemId, name: itemName, quantity, weight, brand };
       const updatedList = [...shoppingList, newItem];
       setShoppingList(updatedList);
 
@@ -239,17 +243,37 @@ const ListaCompras = () => {
     }
   };
 
+  const handleOpenModalItemDelete = (item) => {
+    setSelectedItem(item);
+    setDeleteModalItemOpen(true);
+  };
   const handleDeleteItemConfirm = async () => {
-    if (selectedCompra && familyId) {
-      // try {
-      //   await deleteDoc(doc(db, `familiasDB/${familyId}/listasCompras`, selectedCompra.id));
-      //   await fetchHistoryList(familyId);
-      //   setDeleteModalOpen(false);
-      //   setSelectedCompra(null);
-      // } catch (error) {
-      //   console.error('Error deleting compra:', error);
-      // }
-      console.log(selectedCompra)
+    if (selectedItem && familyId && currentCompraId) {
+      try {
+        const compraDocRef = doc(db, `familiasDB/${familyId}/listasCompras`, currentCompraId);
+        
+        // Obtener el documento actual
+        const compraDoc = await getDoc(compraDocRef);
+        if (compraDoc.exists()) {
+          const currentItems = compraDoc.data().items;
+          
+          // Filtrar el item seleccionado
+          const updatedItems = currentItems.filter(item => item.id !== selectedItem.id);
+          
+          // Actualizar el documento con la nueva lista de items
+          await updateDoc(compraDocRef, { items: updatedItems });
+          
+          // Actualizar el estado local
+          setShoppingList(updatedItems);
+          
+          console.log("Item eliminado con éxito");
+        }
+        
+        setDeleteModalItemOpen(false);
+        setSelectedItem(null);
+      } catch (error) {
+        console.error('Error deleting item:', error);
+      }
     }
   };
 
@@ -387,7 +411,7 @@ const ListaCompras = () => {
                     </Box>
                   }
                 />
-                <IconButton edge="end" aria-label="delete" sx={{ color: 'error.main' }} onClick={() => handleDeleteClick(compra)}>
+                <IconButton edge="end" aria-label="delete" sx={{ color: 'error.main' }} onClick={() => handleOpenModalItemDelete(item)}>
                   <DeleteIcon />
                 </IconButton>
               </ListItem>
@@ -473,8 +497,8 @@ const ListaCompras = () => {
 
       {/* Modal de Elimina un item en especifico */}
       <Dialog
-        open={deleteItemModalOpen}
-        onClose={() => setDeleteItemModalOpen(false)}
+        open={deleteModalItemOpen}
+        onClose={() => setDeleteModalItemOpen(false)}
       >
         <DialogTitle>{"¿Seguro que querés eliminarlo?"}</DialogTitle>
         <DialogContent>
@@ -483,7 +507,7 @@ const ListaCompras = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteItemModalOpen(false)}>Cancelar</Button>
+          <Button onClick={() => setDeleteModalItemOpen(false)}>Cancelar</Button>
           <Button onClick={handleDeleteItemConfirm} color="error">Eliminar</Button>
         </DialogActions>
       </Dialog>
