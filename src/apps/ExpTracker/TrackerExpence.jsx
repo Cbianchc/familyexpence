@@ -65,7 +65,7 @@ function TrackerExpence() {
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <Container maxWidth="sm" sx={{ p: 0, m: 0 }}>
+        <Container maxWidth="sm" sx={{ mt: 5, p: 0 }}>
           <Box my={1}>
             <Balance />
             <AddTransaction familyId={familyId} user={userName}/>

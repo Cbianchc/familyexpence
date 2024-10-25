@@ -11,10 +11,11 @@ export default (state, action) => {
         transactions: state.transactions.filter(transaction => transaction.id !== action.payload)
       };
     case 'ADD_TRANSACTION':
-      return {
-        ...state,
-        transactions: [...state.transactions, action.payload]
-      };
+      const exists = state.transactions.some(transaction => transaction.id === action.payload.id);
+  return {
+    ...state,
+    transactions: exists ? state.transactions : [...state.transactions, action.payload]
+  };
     case 'SET_USER_ID':
       return {
         ...state,

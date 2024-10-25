@@ -56,6 +56,8 @@ export const GlobalProvider = ({ children }) => {
       const unsubscribe = onSnapshot(gastosRef, (snapshot) => {
         const transactions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
+      
+
         dispatch({
           type: 'SET_TRANSACTIONS',
           payload: transactions
@@ -81,7 +83,7 @@ export const GlobalProvider = ({ children }) => {
         // 3. Si se encuentra el documento, eliminarlo
         querySnapshot.forEach(async (docSnapshot) => {
           await deleteDoc(doc(db, `familiasDB/${familyId}/gastos`, docSnapshot.id)); // Elimina usando el ID del documento
-          console.log('delete transaction', id);
+
           dispatch({
             type: 'DELETE_TRANSACTION',
             payload: id,

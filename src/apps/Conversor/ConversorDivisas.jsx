@@ -11,6 +11,24 @@ import {
   Box,
   Paper,
 } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#6200ea', // Morado
+    },
+    secondary: {
+      main: '#03dac6', // Cian
+    },
+    background: {
+      default: '#f5f5f5', // Gris claro
+    },
+    text: {
+      primary: '#212121', // Negro
+    },
+  },
+});
 
 const ConversorDivisas = () => {
   const [monto, setMonto] = useState(0);
@@ -48,8 +66,10 @@ const ConversorDivisas = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-        <Typography variant="h6" component="h1" color={'primary'} gutterBottom>
+    <ThemeProvider theme={theme}>
+      <Container maxWidth="sm" sx={{ mt: 5 }}>
+
+        <Typography variant="h4" component="h1" color={'primary'} gutterBottom align="center">
           Conversor de Divisas
         </Typography>
         <Box component="form" noValidate autoComplete="off">
@@ -61,6 +81,7 @@ const ConversorDivisas = () => {
             fullWidth
             margin="normal"
             variant="outlined"
+            sx={{ bgcolor: 'white' }} // Cambia el fondo a blanco
           />
           <FormControl fullWidth margin="normal" variant="outlined">
             <InputLabel>Moneda Origen</InputLabel>
@@ -68,6 +89,7 @@ const ConversorDivisas = () => {
               value={monedaOrigen}
               onChange={handleMonedaOrigenChange}
               label="Moneda Origen"
+              sx={{ bgcolor: 'white' }} // Cambia el fondo a blanco
             >
               <MenuItem value="ARS">Pesos Argentinos</MenuItem>
               <MenuItem value="USD">Dólar USA</MenuItem>
@@ -98,16 +120,17 @@ const ConversorDivisas = () => {
             variant="contained"
             color="primary"
             onClick={handleConvertir}
-            sx={{ mt: 3 }}
+            sx={{ mt: 3, borderRadius: 20 }} // Añade bordes redondeados
             fullWidth
           >
             Convertir
           </Button>
         </Box>
-        <Typography variant="h6" component="p" sx={{ mt: 4 }}>
+        <Typography variant="h6" component="p" sx={{ mt: 4, textAlign: 'center' }}>
           Resultado: {resultado.toFixed(2)}
         </Typography>
-    </Container>
+      </Container>
+    </ThemeProvider>
   );
 };
 
